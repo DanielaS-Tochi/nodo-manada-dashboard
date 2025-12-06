@@ -1,12 +1,18 @@
 import fetch from "node-fetch";
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-// Carga config.json (el usuario deberá copiar config.example.json y renombrarlo)
+// Rutas absolutas para ESModules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// 🚨 Cargar config.json SIEMPRE desde /server
 let config;
 try {
-  config = JSON.parse(fs.readFileSync("./config.json"));
+  config = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")));
 } catch (e) {
-  console.error("❌ No se encontró config.json. Copiá config.example.json.");
+  console.error("❌ No se encontró config.json en /server");
   process.exit(1);
 }
 

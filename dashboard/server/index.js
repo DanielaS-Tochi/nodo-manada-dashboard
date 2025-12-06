@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 import { rpc } from "./rpc.js";
 
@@ -10,6 +11,18 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
+
+// 🚨 Carga SIEMPRE config.json desde la carpeta /server
+// (evita errores si npm run dev se ejecuta desde otra carpeta)
+let config;
+try {
+  config = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")));
+  console.log("✅ config.json cargado correctamente");
+} catch (e) {
+  console.error("❌ ERROR: No se pudo cargar config.json desde /server");
+  console.error("Ruta buscada:", path.join(__dirname, "config.json"));
+  process.exit(1);
+}
 
 // Sirve archivos estáticos del cliente
 app.use(express.static(path.join(__dirname, "../client")));
