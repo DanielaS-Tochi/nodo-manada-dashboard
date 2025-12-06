@@ -1,0 +1,18 @@
+# Node
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Environment / config
+dashboard/server/config.json
+
+# Logs
+*.log
+
+# OS / Editor
+.DS_Store
+.vscode/
+*.swp
+
+# Codespaces garbage
+.gitignore~
