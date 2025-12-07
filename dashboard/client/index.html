@@ -13,6 +13,23 @@
     <p>Estado del nodo Bitcoin en tiempo real</p>
   </header>
 
+  <div class="stats-wrapper">
+  <div class="stat-card">
+    <h3>Último bloque</h3>
+    <p id="stat-block">–</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>Conexiones</h3>
+    <p id="stat-connections">–</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>Disco usado (GB)</h3>
+    <p id="stat-disk">–</p>
+  </div>
+</div>
+
   <main>
     <section class="card">
       <h2>Blockchain Info</h2>
@@ -51,6 +68,7 @@
   </div>
 </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js" defer></script>
+
 </body>
 </html>

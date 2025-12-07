@@ -12,8 +12,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(cors());
 
-// 🚨 Carga SIEMPRE config.json desde la carpeta /server
-// (evita errores si npm run dev se ejecuta desde otra carpeta)
+// 🚨 Cargar SIEMPRE config.json desde /server
 let config;
 try {
   config = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")));
@@ -27,10 +26,20 @@ try {
 // Sirve archivos estáticos del cliente
 app.use(express.static(path.join(__dirname, "../client")));
 
-// Endpoint: estado básico del nodo
+// ===== ENDPOINT 1: Estado del nodo =====
 app.get("/api/status", async (req, res) => {
   try {
     const info = await rpc("getblockchaininfo");
+    res.json(info);
+  } catch (err) {
+    res.status(500).json({ error: "Error consultando RPC", details: err });
+  }
+});
+
+// ===== ENDPOINT 2: Conexiones de red =====
+app.get("/api/connections", async (req, res) => {
+  try {
+    const info = await rpc("getnetworkinfo");
     res.json(info);
   } catch (err) {
     res.status(500).json({ error: "Error consultando RPC", details: err });
@@ -42,3 +51,4 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🐺 Nodo Manada Dashboard → http://localhost:${PORT}`);
 });
+
