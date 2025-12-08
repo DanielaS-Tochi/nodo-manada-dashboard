@@ -1,5 +1,5 @@
 // ====== ANIMACIÓN DE FONDO (estrellas) ======
-const stars = 220;
+const stars = 180; // equilibrado bonito + rendimiento
 const container = document.body;
 
 for (let i = 0; i < stars; i++) {
@@ -11,13 +11,15 @@ for (let i = 0; i < stars; i++) {
   container.appendChild(star);
 }
 
-// ====== ELEMENTOS DEL DOM ======
+// ====== ELEMENTOS ======
 const infoBox = document.getElementById("blockchain-data");
-const blockHeight = document.getElementById("stat-block");
-const connectionsCount = document.getElementById("stat-connections");
-const diskUsage = document.getElementById("stat-disk");
+const blockHeightEl = document.getElementById("stat-block");
+const connectionsEl = document.getElementById("stat-connections");
+const diskUsageEl = document.getElementById("stat-disk");
 
-// ====== FUNCIÓN PARA CARGAR INFO DEL NODO ======
+let lastBlock = null; // para animación cuando sube
+
+// ====== ESTADO DEL NODO ======
 async function loadNodeStatus() {
   try {
     const res = await fetch("/api/status");
@@ -29,40 +31,56 @@ async function loadNodeStatus() {
       return;
     }
 
-    // JSON completo
+    // Mostrar JSON completo
     infoBox.textContent = JSON.stringify(data, null, 2);
 
-    // Stats
-    blockHeight.textContent = data.result.blocks;
-    diskUsage.textContent =
-      Math.round(data.result.size_on_disk / (1024 * 1024 * 1024)) + " GB";
+    // METRICAS
+    const block = data.result.blocks;
+    const diskGB = Math.round(data.result.size_on_disk / 1024 / 1024 / 1024);
 
-    // Estado del nodo
-    if (data.result.initialblockdownload) {
-      document.body.className = "sync"; // Amarillo
-    } else {
-      document.body.className = "ok"; // Verde
+    // Animación si hay nuevo bloque
+    if (lastBlock !== null && block !== lastBlock) {
+      animateBlockChange();
     }
+    lastBlock = block;
+
+    blockHeightEl.textContent = block;
+    diskUsageEl.textContent = diskGB + " GB";
+
+    // Estado visual del nodo
+    if (data.result.initialblockdownload) {
+      document.body.className = "sync";
+    } else {
+      document.body.className = "ok";
+    }
+
   } catch (err) {
     document.body.className = "error";
     infoBox.textContent = "❌ Error conectando al backend.";
   }
 }
 
-// ====== FUNCIÓN PARA CARGAR CONEXIONES ======
+// ====== ANIMACIÓN CUANDO SUBE EL BLOQUE ======
+function animateBlockChange() {
+  blockHeightEl.classList.add("pulse");
+  setTimeout(() => blockHeightEl.classList.remove("pulse"), 800);
+}
+
+// ====== CONEXIONES ======
 async function loadConnections() {
   try {
     const res = await fetch("/api/connections");
     const data = await res.json();
 
     if (data.error) {
-      connectionsCount.textContent = "--";
+      connectionsEl.textContent = "--";
       return;
     }
 
-    connectionsCount.textContent = data.result.connections;
+    connectionsEl.textContent = data.result.connections;
+
   } catch (err) {
-    connectionsCount.textContent = "--";
+    connectionsEl.textContent = "--";
   }
 }
 
@@ -74,5 +92,3 @@ function refresh() {
 
 refresh();
 setInterval(refresh, 5000);
-
-
