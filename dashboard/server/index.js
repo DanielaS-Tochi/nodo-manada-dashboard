@@ -46,6 +46,26 @@ app.get("/api/connections", async (req, res) => {
   }
 });
 
+// ===== ENDPOINT 3: Datos del último bloque =====
+app.get("/api/lastblock", async (req, res) => {
+  try {
+    const chain = await rpc("getblockchaininfo");
+    const hash = chain.result.bestblockhash;
+    const header = await rpc("getblockheader", [hash]);
+
+    res.json({
+      hash,
+      height: chain.result.blocks,
+      time: header.result.time,
+      difficulty: header.result.difficulty,
+      weight: header.result.weight
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: "Error consultando último bloque", details: err });
+  }
+});
+
 // Inicia servidor
 const PORT = 3000;
 app.listen(PORT, () => {

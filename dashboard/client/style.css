@@ -38,25 +38,45 @@ header h1 {
   animation: pulse 2.5s infinite;
 }
 
-header p {
-  margin-top: 5px;
-  font-size: 1rem;
-  color: #ccc;
-}
-
 @keyframes pulse {
   0% { text-shadow: 0 0 0px #ffae00; }
   50% { text-shadow: 0 0 12px #ffae00; }
   100% { text-shadow: 0 0 0px #ffae00; }
 }
 
+header p {
+  margin-top: 5px;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+/* ====== STARFIELD (en el fondo, NO dentro de cards) ====== */
+.star {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: white;
+  opacity: 0.45;
+  border-radius: 50%;
+  pointer-events: none; /* <<< CLAVE: NO ENTRA A LAS TARJETAS */
+  z-index: 0;
+  animation: twinkle linear infinite;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.1; transform: scale(1); }
+  to   { opacity: 0.7; transform: scale(1.3); }
+}
+
 /* ====== STATS ====== */
 .stats-wrapper {
+  position: relative;
+  z-index: 2;  /* Encima del starfield */
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
   flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  padding: 20px 10px;
 }
 
 .stat-card {
@@ -67,11 +87,14 @@ header p {
   padding: 15px;
   text-align: center;
   backdrop-filter: blur(4px);
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;             /* evita que texto se escape */
+  word-wrap: break-word;        /* corta palabras largas */
 }
 
 .stat-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.06);
+  box-shadow: 0 0 15px rgba(255, 150, 50, 0.4);
 }
 
 .stat-card h3 {
@@ -81,16 +104,31 @@ header p {
 }
 
 .stat-card p {
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: bold;
   color: #fff;
+  max-width: 100%;
+  overflow-wrap: break-word; /* evita que números largos rompan */
+}
+
+/* Animación de "nuevo bloque" */
+.pulse {
+  animation: pulseBlock 0.8s ease-out;
+}
+
+@keyframes pulseBlock {
+  0% { transform: scale(1); color: #ffae00; }
+  50% { transform: scale(1.25); color: #ffffff; }
+  100% { transform: scale(1); color: #ffae00; }
 }
 
 /* ====== MAIN CARD ====== */
 .card {
+  position: relative;
+  z-index: 2; /* encima del starfield */
   width: 92%;
   max-width: 720px;
-  margin: 20px auto;
+  margin: 25px auto;
   padding: 25px;
   border-radius: 12px;
   background: rgba(20, 20, 20, 0.85);
@@ -114,25 +152,14 @@ header p {
   font-size: 0.82rem;
   max-height: 380px;
   overflow-y: auto;
-}
-
-/* ====== STARFIELD ====== */
-.star {
-  position: fixed;
-  width: 2px;
-  height: 2px;
-  background: white;
-  opacity: 0.5;
-  border-radius: 50%;
-  animation: twinkle linear infinite;
-}
-@keyframes twinkle {
-  from { opacity: 0.1; transform: scale(1); }
-  to   { opacity: 0.6; transform: scale(1.4); }
+  overflow-x: hidden;
+  word-wrap: break-word;
 }
 
 /* ====== FOOTER ====== */
 .footer {
+  position: relative;
+  z-index: 2;
   padding: 25px 0;
   text-align: center;
   background: rgba(255, 255, 255, 0.03);
@@ -157,7 +184,6 @@ header p {
 }
 
 /* ====== MOBILE ====== */
-
 @media (max-width: 480px) {
   header h1 {
     font-size: 1.7rem;
@@ -169,29 +195,6 @@ header p {
 
   .data-box {
     font-size: 0.75rem;
-  }
-}
-
-/* ====== ANIMACIÓN DE BLOQUE NUEVO ====== */
-.pulse {
-  animation: pulseBlock 0.6s ease-out;
-}
-
-@keyframes pulseBlock {
-  0% {
-    transform: scale(1);
-    color: #ffa500;
-    text-shadow: 0 0 4px #ffae00;
-  }
-  50% {
-    transform: scale(1.3);
-    color: #ffd27f;
-    text-shadow: 0 0 12px #ffc166;
-  }
-  100% {
-    transform: scale(1);
-    color: #ffa500;
-    text-shadow: 0 0 4px #ffae00;
   }
 }
 

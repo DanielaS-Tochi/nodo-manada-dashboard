@@ -1,5 +1,5 @@
 // ====== ANIMACIÓN DE FONDO (estrellas) ======
-const stars = 180; // equilibrado bonito + rendimiento
+const stars = 120; // equilibrado: bonito + buen rendimiento
 const container = document.body;
 
 for (let i = 0; i < stars; i++) {
@@ -17,7 +17,13 @@ const blockHeightEl = document.getElementById("stat-block");
 const connectionsEl = document.getElementById("stat-connections");
 const diskUsageEl = document.getElementById("stat-disk");
 
-let lastBlock = null; // para animación cuando sube
+// Nuevas métricas
+const diffEl = document.getElementById("stat-diff");
+const weightEl = document.getElementById("stat-weight");
+const timeEl = document.getElementById("stat-time");
+
+// Para animación
+let lastBlock = null;
 
 // ====== ESTADO DEL NODO ======
 async function loadNodeStatus() {
@@ -31,14 +37,13 @@ async function loadNodeStatus() {
       return;
     }
 
-    // Mostrar JSON completo
+    // Mostrar JSON en la card
     infoBox.textContent = JSON.stringify(data, null, 2);
 
-    // METRICAS
     const block = data.result.blocks;
     const diskGB = Math.round(data.result.size_on_disk / 1024 / 1024 / 1024);
 
-    // Animación si hay nuevo bloque
+    // Animación si subió el bloque
     if (lastBlock !== null && block !== lastBlock) {
       animateBlockChange();
     }
@@ -47,11 +52,11 @@ async function loadNodeStatus() {
     blockHeightEl.textContent = block;
     diskUsageEl.textContent = diskGB + " GB";
 
-    // Estado visual del nodo
+    // Estado del nodo: colores del fondo
     if (data.result.initialblockdownload) {
-      document.body.className = "sync";
+      document.body.className = "sync"; // Amarillo
     } else {
-      document.body.className = "ok";
+      document.body.className = "ok"; // Verde
     }
 
   } catch (err) {
@@ -79,8 +84,38 @@ async function loadConnections() {
 
     connectionsEl.textContent = data.result.connections;
 
-  } catch (err) {
+  } catch {
     connectionsEl.textContent = "--";
+  }
+}
+
+// ====== NUEVO: INFO DEL ÚLTIMO BLOQUE ======
+async function loadLastBlock() {
+  try {
+    const res = await fetch("/api/lastblock");
+    const data = await res.json();
+
+    if (data.error) {
+      diffEl.textContent = "--";
+      weightEl.textContent = "--";
+      timeEl.textContent = "--";
+      return;
+    }
+
+    // Dificultad
+    diffEl.textContent = Math.round(data.difficulty).toLocaleString();
+
+    // Weight → kWU
+    weightEl.textContent = (data.weight / 1000).toFixed(1) + " kWU";
+
+    // Timestamp → hora local
+    const date = new Date(data.time * 1000);
+    timeEl.textContent = date.toLocaleTimeString();
+
+  } catch (err) {
+    diffEl.textContent = "--";
+    weightEl.textContent = "--";
+    timeEl.textContent = "--";
   }
 }
 
@@ -88,6 +123,7 @@ async function loadConnections() {
 function refresh() {
   loadNodeStatus();
   loadConnections();
+  loadLastBlock();
 }
 
 refresh();
