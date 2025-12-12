@@ -1,21 +1,26 @@
-// ====== STARFIELD (solo fondo) ======
-const stars = 160;
-const container = document.body;
-for (let i = 0; i < stars; i++) {
+/* =====================================================
+   STARFIELD — fondo solamente, nunca sobre cards
+===================================================== */
+const STAR_COUNT = 150;
+for (let i = 0; i < STAR_COUNT; i++) {
   const s = document.createElement("div");
   s.className = "star";
   s.style.left = Math.random() * 100 + "vw";
   s.style.top = Math.random() * 100 + "vh";
   s.style.animationDuration = (2 + Math.random() * 4) + "s";
-  s.style.opacity = 0.12 + Math.random() * 0.6;
-  s.style.zIndex = "-1"; // estrellas en fondo
-  container.appendChild(s);
+  s.style.opacity = 0.15 + Math.random() * 0.55;
+  s.style.zIndex = "-1";
+  document.body.appendChild(s);
 }
 
-// ===== ELEMENTS =====
+/* =====================================================
+   ELEMENTS
+===================================================== */
 const infoBox = document.getElementById("blockchain-data");
+
 const blockHeightEl = document.getElementById("stat-block");
 const blockHashSmall = document.getElementById("stat-block-hash");
+
 const connectionsEl = document.getElementById("stat-connections");
 const diskUsageEl = document.getElementById("stat-disk");
 
@@ -31,18 +36,14 @@ const warningsEl = document.getElementById("stat-warnings");
 const consoleStatus = document.getElementById("console-status");
 const btnRefresh = document.getElementById("btn-refresh");
 
-// ensure placeholders
-function ensure(id) {
-  const el = document.getElementById(id);
-  if (el) return el;
-  const fake = document.createElement('span'); fake.id = id; fake.style.display = 'none'; document.body.appendChild(fake); return fake;
+/* Safety: ensure missing elements don't break JS */
+function safe(id) {
+  return document.getElementById(id) || { textContent: "", style: {} };
 }
-ensure('stat-hashps'); ensure('stat-mempool-tx'); ensure('stat-mempool-size'); ensure('stat-warnings');
 
-// ===== POLLING =====
-let lastBlock = null;
-
-// safe fetch helper
+/* =====================================================
+   HELPERS
+===================================================== */
 async function rpcGet(path) {
   try {
     const res = await fetch(path, { cache: "no-store" });
@@ -53,98 +54,123 @@ async function rpcGet(path) {
   }
 }
 
-// formatters
 const toGB = bytes => Math.round((bytes || 0) / 1024 / 1024 / 1024);
 const toKB = bytes => Math.round((bytes || 0) / 1024);
 
-// LOADERS
-async function loadNodeStatus(){
-  const data = await rpcGet('/api/status');
+/* =====================================================
+   LOADERS
+===================================================== */
+let lastBlock = null;
+
+async function loadNodeStatus() {
+  const data = await rpcGet("/api/status");
+
   if (data.error) {
-    document.body.className = 'error';
-    if (infoBox) infoBox.textContent = '⚠ Error RPC: no se pudo obtener estado.';
-    if (consoleStatus) consoleStatus.textContent = 'RPC ERROR';
+    document.body.className = "error";
+    infoBox.textContent = "⚠ Error RPC: no se pudo obtener estado.";
+    consoleStatus.textContent = "RPC ERROR";
     return;
   }
 
-  if (infoBox) {
-    try { infoBox.innerText = JSON.stringify(data, null, 2); } catch(e){ infoBox.textContent = "[error parsing]"; }
+  // Show pretty JSON
+  infoBox.textContent = JSON.stringify(data, null, 2);
+
+  const block = data.result.blocks;
+  const bestHash = data.result.bestblockhash || "—";
+  const diskGB = toGB(data.result.size_on_disk);
+
+  // Animación cuando sube el bloque
+  if (lastBlock !== null && block !== lastBlock) {
+    animateBlockPulse();
   }
-
-  const block = data.result?.blocks ?? null;
-  const bestHash = data.result?.bestblockhash ?? '-';
-  const diskGB = toGB(data.result?.size_on_disk ?? 0);
-
-  if (lastBlock !== null && block !== lastBlock) animateBlockPulse();
   lastBlock = block;
 
-  if (blockHeightEl) blockHeightEl.textContent = block ?? '–';
-  if (blockHashSmall) blockHashSmall.textContent = `hash: ${bestHash}`;
-  if (diskUsageEl) diskUsageEl.textContent = diskGB + ' GB';
+  blockHeightEl.textContent = block;
+  blockHashSmall.textContent = "hash: " + bestHash;
+  diskUsageEl.textContent = diskGB + " GB";
 
-  if (consoleStatus) consoleStatus.textContent = 'OK';
-  if (data.result?.initialblockdownload) document.body.className='sync'; else document.body.className='ok';
+  // Estado visual del fondo
+  if (data.result.initialblockdownload) {
+    document.body.className = "sync";
+  } else {
+    document.body.className = "ok";
+  }
+
+  consoleStatus.textContent = "OK";
 }
 
-function animateBlockPulse(){
-  if (!blockHeightEl) return;
-  blockHeightEl.classList.add('pulse');
-  setTimeout(()=> blockHeightEl.classList.remove('pulse'), 900);
+function animateBlockPulse() {
+  blockHeightEl.classList.add("pulse");
+  setTimeout(() => blockHeightEl.classList.remove("pulse"), 900);
 }
 
-async function loadConnections(){
-  const data = await rpcGet('/api/connections');
-  if (data.error) { if (connectionsEl) connectionsEl.textContent = '--'; return; }
-  if (connectionsEl) connectionsEl.textContent = data.result?.connections ?? '--';
-}
-
-async function loadLastBlock(){
-  const data = await rpcGet('/api/lastblock');
+async function loadConnections() {
+  const data = await rpcGet("/api/connections");
   if (data.error) {
-    if (diffEl) diffEl.textContent = '--';
-    if (weightEl) weightEl.textContent = '--';
-    if (timeEl) timeEl.textContent = '--';
+    connectionsEl.textContent = "--";
     return;
   }
-  if (diffEl) diffEl.textContent = (Math.round(data.difficulty)).toLocaleString();
-  if (weightEl) weightEl.textContent = (data.weight/1000).toFixed(1) + ' kWU';
-  if (timeEl) timeEl.textContent = new Date((data.time||0)*1000).toLocaleTimeString();
-  if (blockHashSmall) blockHashSmall.textContent = 'hash: ' + (data.hash ?? '-');
+  connectionsEl.textContent = data.result.connections ?? "--";
 }
 
-async function loadMempool(){
-  const data = await rpcGet('/api/mempool');
-  if (data.error || !data.result) {
-    if (mempoolTxEl) mempoolTxEl.textContent = '--';
-    if (mempoolSizeEl) mempoolSizeEl.textContent = '--';
+async function loadLastBlock() {
+  const data = await rpcGet("/api/lastblock");
+
+  if (data.error) {
+    diffEl.textContent = "--";
+    weightEl.textContent = "--";
+    timeEl.textContent = "--";
     return;
   }
-  if (mempoolTxEl) mempoolTxEl.textContent = data.result.size ?? '--';
-  if (mempoolSizeEl) mempoolSizeEl.textContent = toKB(data.result.bytes || 0) + ' KB';
+
+  diffEl.textContent = Math.round(data.difficulty).toLocaleString();
+  weightEl.textContent = (data.weight / 1000).toFixed(1) + " kWU";
+  timeEl.textContent = new Date(data.time * 1000).toLocaleTimeString();
+  blockHashSmall.textContent = "hash: " + data.hash;
 }
 
-async function loadHashrate(){
-  const data = await rpcGet('/api/hashps');
+async function loadMempool() {
+  const data = await rpcGet("/api/mempool");
   if (data.error || !data.result) {
-    if (hashpsEl) hashpsEl.textContent = '--';
+    mempoolTxEl.textContent = "--";
+    mempoolSizeEl.textContent = "--";
     return;
   }
+
+  mempoolTxEl.textContent = data.result.size;
+  mempoolSizeEl.textContent = toKB(data.result.bytes) + " KB";
+}
+
+async function loadHashrate() {
+  const data = await rpcGet("/api/hashps");
+
+  if (data.error || !data.result) {
+    hashpsEl.textContent = "--";
+    return;
+  }
+
   const h = data.result.hashps ?? data.result;
-  const th = (h/1e12);
-  if (hashpsEl) hashpsEl.textContent = (th >= 0.01) ? th.toFixed(2) + ' TH/s' : (h/1e9).toFixed(2) + ' GH/s';
+  const th = h / 1e12;
+
+  hashpsEl.textContent =
+    th >= 0.01 ? th.toFixed(2) + " TH/s" : (h / 1e9).toFixed(2) + " GH/s";
 }
 
-async function loadWarnings(){
-  const s = await rpcGet('/api/status');
-  if (!s.error && s.result && s.result.warnings && s.result.warnings.length) {
-    if (warningsEl) warningsEl.textContent = s.result.warnings.join(' ; ');
+async function loadWarnings() {
+  const status = await rpcGet("/api/status");
+
+  if (!status.error && status.result?.warnings?.length) {
+    warningsEl.textContent = status.result.warnings.join(" | ");
     return;
   }
-  if (warningsEl) warningsEl.textContent = '–';
+
+  warningsEl.textContent = "–";
 }
 
-// orchestrator
-async function refreshAll(){
+/* =====================================================
+   ORCHESTRATOR
+===================================================== */
+async function refreshAll() {
   await Promise.allSettled([
     loadNodeStatus(),
     loadConnections(),
@@ -155,22 +181,25 @@ async function refreshAll(){
   ]);
 }
 
-// refresh loop and manual refresh
 refreshAll();
 setInterval(refreshAll, 5000);
-btnRefresh?.addEventListener('click', refreshAll);
 
-// auto-scroll console on update
-let lastConsoleText = '';
-const consoleBox = document.querySelector('.console-box');
-const obs = new MutationObserver(()=> {
-  if (!consoleBox) return;
-  if (consoleBox.innerText !== lastConsoleText) {
-    consoleBox.scrollTop = consoleBox.scrollHeight;
-    lastConsoleText = consoleBox.innerText;
-  }
-});
-if (consoleBox) obs.observe(consoleBox, { childList: true, subtree: true, characterData: true });
+btnRefresh?.addEventListener("click", refreshAll);
 
-console.log("Nodo Manada Dashboard client inicializado (v1)");
+/* =====================================================
+   AUTO-SCROLL DEL TERMINAL
+===================================================== */
+const consoleBox = document.querySelector(".console-box");
+let lastConsoleText = "";
 
+if (consoleBox) {
+  const obs = new MutationObserver(() => {
+    if (consoleBox.innerText !== lastConsoleText) {
+      consoleBox.scrollTop = consoleBox.scrollHeight;
+      lastConsoleText = consoleBox.innerText;
+    }
+  });
+  obs.observe(consoleBox, { childList: true, subtree: true, characterData: true });
+}
+
+console.log("🐺 Nodo Manada Dashboard — Client OK");

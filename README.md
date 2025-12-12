@@ -1,4 +1,5 @@
 # nodo-manada-dashboard
+
 Un dashboard liviano, estético y soberano para interactuar con Bitcoin Core vía RPC. Identidad Manada Wolfpack UI.
 
 🐺 Nodo Manada Dashboard
@@ -59,17 +60,17 @@ Codespaces, Linux o Windows (recomendado Codespaces para rendimiento)
 
 Colores principal:
 
-#0B0B0C — negro profundo
+# 0B0B0C — negro profundo
 
-#1A1A1C — gris humo
+# 1A1A1C — gris humo
 
-#F7931A — naranja Bitcoin
+# F7931A — naranja Bitcoin
 
-#FF8C42 — naranja Manada
+# FF8C42 — naranja Manada
 
-#4FD8FF — azul aurora
+# 4FD8FF — azul aurora
 
-#EDEDED — blanco suave
+# EDEDED — blanco suave
 
 Tipografías:
 
