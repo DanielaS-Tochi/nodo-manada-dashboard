@@ -1,203 +1,184 @@
-/* ====== RESET ====== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* ===== RESET ===== */
+* { margin:0; padding:0; box-sizing:border-box; }
+:root{
+  --accent:#ff8c00;        /* naranja holográfico */
+  --accent-weak: rgba(255,140,0,0.12);
+  --bg-1: #03030a;
+  --glass: rgba(18,18,20,0.78);
+  --mono: "JetBrains Mono", monospace;
+  --rad: 12px;
 }
 
-/* ====== BODY ====== */
-body {
+/* ===== BODY / STATES ===== */
+body{
   font-family: "Montserrat", sans-serif;
-  background: #0b0b0b;
-  color: #eee;
-  min-height: 100vh;
-  overflow-x: hidden;
-  transition: background 0.8s ease;
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(255,140,0,0.03), transparent 6%),
+              linear-gradient(180deg,#010104 0%, #040408 100%);
+  color:#eaeaea;
+  min-height:100vh;
+  transition: background .5s ease, color .3s;
+  overflow-x:hidden;
 }
 
-/* Estados del nodo */
-body.ok {
-  background: radial-gradient(circle at 20% 20%, #003300, #000);
-}
-body.sync {
-  background: radial-gradient(circle at 30% 30%, #664d00, #000);
-}
-body.error {
-  background: radial-gradient(circle at 40% 40%, #330000, #000);
-}
+/* estados */
+body.ok{ --accent: #2ef07a; }
+body.sync{ --accent: #ffd166; }
+body.error{ --accent: #ff6b6b; }
 
-/* ====== HEADER ====== */
-header {
-  text-align: center;
-  padding: 25px 10px;
-}
+/* ===== HEADER ===== */
+header{ text-align:center; padding:18px 12px; z-index:4; position:relative; }
+header h1{ font-size:1.95rem; color:var(--accent); letter-spacing:1px; text-shadow:0 6px 30px rgba(255,140,0,0.04); }
+header p{ color:#cfcfcf; margin-top:6px; font-size:0.95rem; }
 
-header h1 {
-  font-size: 2.4rem;
-  color: #ffa500;
-  animation: pulse 2.5s infinite;
-}
-
-@keyframes pulse {
-  0% { text-shadow: 0 0 0px #ffae00; }
-  50% { text-shadow: 0 0 12px #ffae00; }
-  100% { text-shadow: 0 0 0px #ffae00; }
+/* ===== STATS GRID ===== */
+.stats-wrapper{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  gap:12px;
+  justify-content:center;
+  padding:16px;
+  width:100%;
+  max-width:1200px;
+  margin:0 auto;
+  z-index:4;
 }
 
-header p {
-  margin-top: 5px;
-  font-size: 1rem;
-  color: #ccc;
-}
-
-/* ====== STARFIELD (en el fondo, NO dentro de cards) ====== */
-.star {
-  position: fixed;
-  width: 2px;
-  height: 2px;
-  background: white;
-  opacity: 0.45;
-  border-radius: 50%;
-  pointer-events: none; /* <<< CLAVE: NO ENTRA A LAS TARJETAS */
-  z-index: 0;
-  animation: twinkle linear infinite;
-}
-
-@keyframes twinkle {
-  from { opacity: 0.1; transform: scale(1); }
-  to   { opacity: 0.7; transform: scale(1.3); }
-}
-
-/* ====== STATS ====== */
-.stats-wrapper {
-  position: relative;
-  z-index: 2;  /* Encima del starfield */
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 18px;
-  padding: 20px 10px;
-}
-
-.stat-card {
-  background: rgba(255, 136, 0, 0.08);
-  border: 1px solid rgba(255, 136, 0, 0.3);
-  border-radius: 10px;
-  width: 180px;
-  padding: 15px;
-  text-align: center;
-  backdrop-filter: blur(4px);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  overflow: hidden;             /* evita que texto se escape */
-  word-wrap: break-word;        /* corta palabras largas */
-}
-
-.stat-card:hover {
-  transform: scale(1.06);
-  box-shadow: 0 0 15px rgba(255, 150, 50, 0.4);
-}
-
-.stat-card h3 {
-  font-size: 1rem;
-  color: #ffa500;
-  margin-bottom: 8px;
-}
-
-.stat-card p {
-  font-size: 1.35rem;
-  font-weight: bold;
-  color: #fff;
-  max-width: 100%;
-  overflow-wrap: break-word; /* evita que números largos rompan */
-}
-
-/* Animación de "nuevo bloque" */
-.pulse {
-  animation: pulseBlock 0.8s ease-out;
-}
-
-@keyframes pulseBlock {
-  0% { transform: scale(1); color: #ffae00; }
-  50% { transform: scale(1.25); color: #ffffff; }
-  100% { transform: scale(1); color: #ffae00; }
-}
-
-/* ====== MAIN CARD ====== */
-.card {
-  position: relative;
-  z-index: 2; /* encima del starfield */
-  width: 92%;
-  max-width: 720px;
-  margin: 25px auto;
-  padding: 25px;
-  border-radius: 12px;
-  background: rgba(20, 20, 20, 0.85);
-  border: 1px solid rgba(255, 136, 0, 0.3);
-  backdrop-filter: blur(6px);
-}
-
-.card h2 {
-  color: #ffa500;
-  margin-bottom: 15px;
-}
-
-.data-box {
-  background: #000;
-  padding: 15px;
-  border-radius: 8px;
-  font-family: monospace;
-  white-space: pre-wrap;
-  border: 1px solid #444;
-  color: #ffddb3;
-  font-size: 0.82rem;
-  max-height: 380px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  word-wrap: break-word;
-}
-
-/* ====== FOOTER ====== */
-.footer {
-  position: relative;
-  z-index: 2;
-  padding: 25px 0;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.03);
-  border-top: 1px solid rgba(255, 136, 0, 0.3);
-  margin-top: 40px;
-}
-
-.footer p {
-  color: #ffa500;
-  margin-bottom: 12px;
-}
-
-.footer-icons a {
-  color: #ff8c00;
-  margin: 0 10px;
-  transition: 0.2s;
-}
-
-.footer-icons a:hover {
-  color: #ffd080;
-  transform: scale(1.15);
-}
-
-/* ====== MOBILE ====== */
-@media (max-width: 480px) {
-  header h1 {
-    font-size: 1.7rem;
-  }
-
-  .stat-card {
-    width: 150px;
-  }
-
-  .data-box {
-    font-size: 0.75rem;
+/* mobile-friendly grid */
+@media (max-width:1000px){
+  .stats-wrapper{
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    padding:12px;
   }
 }
 
+/* stat-card */
+.stat-card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,140,0,0.12);
+  border-radius: var(--rad);
+  padding:12px 14px;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  align-items:flex-start;
+  z-index:5; /* arriba del starfield */
+  box-shadow: 0 6px 30px rgba(0,0,0,0.6);
+}
+
+/* stat header */
+.stat-card h3{ color:var(--accent); font-size:0.9rem; margin:0; font-weight:700; letter-spacing:0.4px; }
+.stat-card p{ font-size:1.35rem; font-weight:700; color:#fff; margin:0; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* main highlight: ocupa dos columnas en desktop */
+.stat-main{ grid-column: span 2; align-items:center; justify-content:center; }
+
+/* small mono text under main number */
+.stat-main .mono{ font-size:0.68rem; color:rgba(255,220,170,0.9); margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* ===== MAIN GRID (console + widgets) ===== */
+.main-grid{
+  display:grid;
+  grid-template-columns: 1fr 360px;
+  gap:20px;
+  width:100%;
+  max-width:1200px;
+  margin:18px auto 40px auto;
+  padding:0 12px;
+  z-index:4;
+}
+
+@media (max-width:920px){
+  .main-grid{ grid-template-columns: 1fr; }
+}
+
+/* ===== CONSOLE CARD ===== */
+.console-card{
+  background: linear-gradient(180deg, rgba(5,10,5,0.96), rgba(8,10,8,0.95));
+  border-radius: var(--rad);
+  border:1px solid rgba(255,140,0,0.06);
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+  min-height:360px;
+  z-index:5;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+  font-family: var(--mono);
+}
+
+/* console header */
+.console-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.console-title{ color: #d1ffd8; font-weight:700; font-size:0.92rem; }
+.console-status{ color:var(--accent); font-size:0.85rem; }
+
+/* console box (terminal look) */
+.console-box{
+  background: linear-gradient(180deg,#051108 0%, #031006 100%);
+  border-radius:8px;
+  padding:12px;
+  color:#bfe8b3;
+  font-family:var(--mono);
+  font-size:0.86rem;
+  height:calc(100% - 86px);
+  overflow:auto;
+  white-space:pre-wrap;
+  line-height:1.4;
+  border:1px solid rgba(0,80,0,0.06);
+}
+
+/* console scanlines faint */
+.console-box::before{
+  content:"";
+  position: absolute;
+  pointer-events:none;
+  left:24px; right:24px;
+  top:150px;
+  height:100%;
+  background-image: linear-gradient(rgba(255,255,255,0.01) 50%, transparent 50%);
+  background-size: 100% 4px;
+  mix-blend-mode: overlay;
+  opacity:0.06;
+}
+
+/* console footer */
+.console-footer{ display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:10px; }
+.btn{ background:transparent; border:1px solid rgba(255,140,0,0.16); color:var(--accent); padding:6px 10px; border-radius:8px; cursor:pointer; font-weight:700; }
+
+/* ===== SIDE WIDGETS ===== */
+.side-widgets{ display:flex; flex-direction:column; gap:12px; z-index:5; }
+.widget.card{ background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); padding:12px; border-radius:10px; border:1px solid rgba(255,140,0,0.06); color:#fff; }
+
+/* widget titles */
+.widget.card h3{ color:var(--accent); margin:0 0 6px 0; font-weight:700; font-size:0.92rem; }
+.widget.card p{ margin:0; font-family:var(--mono); color:#fff; font-size:0.95rem; }
+
+/* ===== FOOTER ===== */
+.footer{ text-align:center; padding:22px 8px; color:#cfcfcf; z-index:5; position:relative; margin-top:20px; }
+.footer-content p{ color:var(--accent); margin-bottom:10px; }
+.footer-icons a{ margin:0 8px; color:var(--accent); text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+.footer-icons svg{ width:20px; height:20px; fill:var(--accent); opacity:0.95; }
+
+/* ===== STARFIELD BACKGROUND ===== */
+.star{ position:fixed; width:2px; height:2px; background:white; opacity:0.45; border-radius:50%; pointer-events:none; z-index:-1; animation:twinkle linear infinite; }
+@keyframes twinkle { from { opacity: 0.08; transform: scale(1); } to { opacity: 0.6; transform: scale(1.4); } }
+
+/* ===== PULSE (nuevo bloque) ===== */
+.pulse{ animation:pulseBlock 0.85s ease-out; }
+@keyframes pulseBlock{
+  0%{ transform:scale(1); color:var(--accent); text-shadow:0 0 6px rgba(255,140,0,0.18); }
+  50%{ transform:scale(1.22); color:#fff; text-shadow:0 0 18px rgba(255,180,90,0.28); }
+  100%{ transform:scale(1); color:var(--accent); text-shadow:0 0 6px rgba(255,140,0,0.18); }
+}
+
+/* LONG TEXT SAFETY */
+.stat-card p, .stat-card .mono { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* responsive tweaks */
+@media (max-width:720px){
+  header h1{ font-size:1.4rem; }
+  .console-box::before{ left:12px; right:12px; top:120px; }
+  .console-card{ min-height:300px; }
+}
 
 
 

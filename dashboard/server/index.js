@@ -5,14 +5,13 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { rpc } from "./rpc.js";
 
-// Necesario para rutas absolutas en ESModules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
 
-// 🚨 Cargar SIEMPRE config.json desde /server
+// Cargar config.json desde /server
 let config;
 try {
   config = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")));
@@ -23,30 +22,36 @@ try {
   process.exit(1);
 }
 
-// Sirve archivos estáticos del cliente
+// Servir estáticos
 app.use(express.static(path.join(__dirname, "../client")));
 
-// ===== ENDPOINT 1: Estado del nodo =====
+// ENDPOINT: estado básico del nodo
 app.get("/api/status", async (req, res) => {
   try {
     const info = await rpc("getblockchaininfo");
     res.json(info);
   } catch (err) {
-    res.status(500).json({ error: "Error consultando RPC", details: err });
+    res.status(500).json({
+      error: "Error consultando RPC getblockchaininfo",
+      details: err && err.message ? err.message : err
+    });
   }
 });
 
-// ===== ENDPOINT 2: Conexiones de red =====
+// ENDPOINT: conexiones de red
 app.get("/api/connections", async (req, res) => {
   try {
     const info = await rpc("getnetworkinfo");
     res.json(info);
   } catch (err) {
-    res.status(500).json({ error: "Error consultando RPC", details: err });
+    res.status(500).json({
+      error: "Error consultando RPC getnetworkinfo",
+      details: err && err.message ? err.message : err
+    });
   }
 });
 
-// ===== ENDPOINT 3: Datos del último bloque =====
+// ENDPOINT: último bloque (header)
 app.get("/api/lastblock", async (req, res) => {
   try {
     const chain = await rpc("getblockchaininfo");
@@ -60,9 +65,37 @@ app.get("/api/lastblock", async (req, res) => {
       difficulty: header.result.difficulty,
       weight: header.result.weight
     });
-
   } catch (err) {
-    res.status(500).json({ error: "Error consultando último bloque", details: err });
+    res.status(500).json({
+      error: "Error consultando último bloque",
+      details: err && err.message ? err.message : err
+    });
+  }
+});
+
+// ENDPOINT: mempool info
+app.get("/api/mempool", async (req, res) => {
+  try {
+    const info = await rpc("getmempoolinfo");
+    res.json({ result: info.result });
+  } catch (err) {
+    res.status(500).json({
+      error: "Error consultando mempool",
+      details: err && err.message ? err.message : err
+    });
+  }
+});
+
+// ENDPOINT: hashrate (getnetworkhashps)
+app.get("/api/hashps", async (req, res) => {
+  try {
+    const r = await rpc("getnetworkhashps");
+    res.json({ result: { hashps: r.result } });
+  } catch (err) {
+    res.status(500).json({
+      error: "Error consultando hashrate",
+      details: err && err.message ? err.message : err
+    });
   }
 });
 
@@ -71,4 +104,3 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🐺 Nodo Manada Dashboard → http://localhost:${PORT}`);
 });
-
