@@ -100,7 +100,17 @@ app.get("/api/hashps", async (req, res) => {
 });
 
 // Inicia servidor
-const PORT = 3000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 3000;
+const server = app.listen(PORT, () => {
   console.log(`🐺 Nodo Manada Dashboard → http://localhost:${PORT}`);
+});
+
+// Manejar errores de arranque (p. ej. puerto en uso) de forma limpia
+server.on("error", (err) => {
+  if (err && err.code === "EADDRINUSE") {
+    console.error(`❌ Error: puerto ${PORT} en uso. Terminando para reinicio.`);
+    process.exit(1);
+  }
+  console.error("Server error:", err);
+  process.exit(1);
 });
