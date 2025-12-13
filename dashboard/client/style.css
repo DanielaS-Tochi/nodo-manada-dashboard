@@ -1,5 +1,5 @@
 /* ============================
-       RESET & BASE
+   RESET & VARIABLES
 ============================ */
 * {
   margin: 0;
@@ -7,16 +7,24 @@
   box-sizing: border-box;
 }
 
+:root {
+  --btc-orange: #ff8c00;
+  --bg-dark: #0b0b0b;
+  --card-alpha: 0.12;
+}
+
 body {
   font-family: "Montserrat", sans-serif;
-  background: #0b0b0b;
+  background: var(--bg-dark);
   color: #eee;
   min-height: 100vh;
   overflow-x: hidden;
   transition: background 0.8s ease;
 }
 
-/* ===== Node status backgrounds ===== */
+/* ============================
+   NODE STATES
+============================ */
 body.ok {
   background: radial-gradient(circle at 20% 20%, #002200, #000);
 }
@@ -28,55 +36,56 @@ body.error {
 }
 
 /* ============================
-         HEADER
+   HEADER
 ============================ */
 header {
-  text-align: center;
-  padding: 25px 10px;
+  padding: 20px 12px;
   position: relative;
   z-index: 3;
 }
 
 .header-top {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 18px;
+  justify-content: center;
+  gap: 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.title-wrap {
+  max-width: 760px;
+  text-align: left;
 }
 
 header h1 {
-  font-size: 2.4rem;
-  color: #ffa500;
-  animation: glowPulse 3s infinite;
+  font-size: 2.2rem;
+  color: var(--btc-orange);
+  animation: glow 3s infinite;
 }
 
-@keyframes glowPulse {
+.subtitle {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: #d0d0d0;
+}
+
+@keyframes glow {
   0% { text-shadow: 0 0 0px #ffae00; }
-  50% { text-shadow: 0 0 14px #ffae00; }
+  50% { text-shadow: 0 0 12px #ffae00; }
   100% { text-shadow: 0 0 0px #ffae00; }
 }
 
-header p {
-  margin-top: 8px;
-  color: #ddd;
-}
-
 .ong-header img {
-  width: 70px;
-  height: 70px;
-  border-radius: 12px;
-  border: 2px solid #ffa500;
+  width: 110px;
+  height: 110px;
+  border-radius: 16px;
+  border: 2px solid var(--btc-orange);
   object-fit: cover;
-  transition: 0.2s;
-}
-
-.ong-header img:hover {
-  transform: scale(1.06);
-  box-shadow: 0 0 12px #ffae00;
 }
 
 /* ============================
-        STARFIELD BACKGROUND
+   STARFIELD (BACKGROUND)
 ============================ */
 .star {
   position: fixed;
@@ -85,82 +94,133 @@ header p {
   background: white;
   border-radius: 50%;
   pointer-events: none;
-  z-index: -1; /* BACKGROUND ONLY */
+  z-index: -1;
   animation: twinkle linear infinite;
 }
 
 @keyframes twinkle {
   from { opacity: 0.15; transform: scale(1); }
-  to   { opacity: 0.55; transform: scale(1.35); }
+  to { opacity: 0.55; transform: scale(1.35); }
 }
 
 /* ============================
-        STATS GRID
+   STATS GRID
 ============================ */
 .stats-wrapper {
   position: relative;
   z-index: 3;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 18px;
   padding: 20px;
   max-width: 1000px;
   margin: auto;
+  align-items: start; /* alinear cards al inicio para que las altas no estiren las otras */
+  grid-auto-rows: auto; /* permitir altura dinámica por fila */
+  justify-items: center; /* centrar cada card dentro de su celda */
+  justify-content: center; /* centrar las columnas dentro del contenedor */
 }
 
 .stat-card {
-  background: rgba(255, 136, 0, 0.08);
-  border: 1px solid rgba(255, 136, 0, 0.35);
+  background: rgba(255,136,0,var(--card-alpha));
+  border: 1px solid rgba(255,136,0,0.35);
   border-radius: 12px;
-  padding: 18px;
+  padding: 16px;
   text-align: center;
   backdrop-filter: blur(4px);
-  transition: 0.25s;
-  overflow-wrap: break-word;
+  min-height: 120px;
+
+  /* Limitar ancho para que puedan centrarse visualmente */
+  width: 100%;
+  max-width: 260px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  transition: transform 0.22s, box-shadow 0.22s;
 }
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0 14px rgba(255, 136, 0, 0.45);
+  box-shadow: 0 0 14px rgba(255,136,0,0.45);
 }
 
 .stat-card h3 {
-  font-size: 1rem;
-  color: #ffa500;
   margin-bottom: 8px;
+  color: var(--btc-orange);
 }
 
 .stat-card p {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #fff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  word-break: break-all;
 }
 
-/* MAIN stat highlight */
 .stat-main {
-  grid-column: span 2;
-  background: rgba(255, 136, 0, 0.14);
+  grid-column: 1 / -1; /* ⬅️ ocupa TODA la fila */
+  background: rgba(255,136,0,0.18);
+  /* centrar el contenido y limitar ancho para mejor lectura */
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Card ancha (fila completa) */
+.stat-wide {
+  grid-column: 1 / -1;
+  /* centrar y limitar ancho cuando es tarjeta ancha */
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Orden visual fino de las cards */
+/* removed forced span rules to allow consistent centering */
+
+/* Dificultad: permitir altura según contenido (ocupa fila completa) */
+.stats-wrapper > .stat-card.stat-wide {
+  grid-column: 1 / -1;
+  min-height: unset; /* permitir altura según contenido */
+  justify-content: center; /* centrar verticalmente */
+  align-items: center; /* alinear contenido al centro */
+  padding: 18px; /* un poco más de espacio para texto multilinea */
+}
+
+.stat-main p {
+  font-size: 1.9rem;
 }
 
 .stat-main small {
   display: block;
   margin-top: 6px;
   font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
   color: #ffbf66;
+  opacity: 0.75;
+  word-break: break-all;
 }
 
-/* Block pulse animation */
+/* Pulse animation */
 .pulse {
-  animation: pulseBlock 0.8s ease-out;
+  animation: pulseBlock 0.85s ease-out;
 }
+
 @keyframes pulseBlock {
-  0% { transform: scale(1); color: #ffae00; }
-  50% { transform: scale(1.25); color: #fff; text-shadow: 0 0 12px #ffd27f; }
-  100% { transform: scale(1); color: #ffae00; }
+  0% { transform: scale(1); color: var(--btc-orange); }
+  50% {
+    transform: scale(1.25);
+    color: #fff;
+    text-shadow: 0 0 12px #ffd27f;
+  }
+  100% { transform: scale(1); color: var(--btc-orange); }
 }
 
 /* ============================
-        MAIN GRID
+   MAIN GRID
 ============================ */
 .main-grid {
   display: grid;
@@ -173,179 +233,166 @@ header p {
 }
 
 /* ============================
-        CONSOLE CARD
+   CONSOLE (VINTAGE)
 ============================ */
 .console-card {
-  background: rgba(15, 15, 15, 0.88);
-  border: 1px solid #ffa50055;
+  background: rgba(15,15,15,0.9);
+  border: 1px solid #ff8c0040;
   border-radius: 12px;
-  padding: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .console-header {
-  background: #0d0d0d;
-  border-bottom: 1px solid #ffa50055;
-  padding: 12px 18px;
+  background: #0b0b0b;
+  border-bottom: 1px solid #ff8c0044;
+  padding: 12px 16px;
   display: flex;
   justify-content: space-between;
   font-family: "JetBrains Mono", monospace;
-  color: #ffa500;
-  font-weight: bold;
+  color: var(--btc-orange);
 }
 
 .console-box {
   height: 360px;
-  overflow-y: auto;
   padding: 18px;
-  background: #000;
-  color: #ffddb3;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #001100, #000);
+  color: #7fffa8;
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.86rem;
-  white-space: pre-wrap;
+  font-size: 0.88rem;
+  white-space: pre;          /* ⬅️ RESPETA saltos de línea */
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .console-footer {
-  border-top: 1px solid #ffa50055;
-  padding: 10px 18px;
+  border-top: 1px solid #ff8c0044;
+  padding: 10px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .btn {
-  background: #ffa500;
+  background: var(--btc-orange);
   border: none;
-  padding: 6px 12px;
+  padding: 7px 12px;
   border-radius: 6px;
-  font-weight: bold;
+  font-weight: 700;
   cursor: pointer;
-  transition: 0.2s;
-}
-
-.btn:hover {
-  background: #ffbf47;
 }
 
 /* ============================
-        SIDEBAR WIDGETS
+   SIDE WIDGETS
 ============================ */
 .side-widgets {
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .widget {
-  background: rgba(20, 20, 20, 0.85);
-  border: 1px solid rgba(255, 136, 0, 0.3);
+  background: rgba(20,20,20,0.86);
+  border: 1px solid rgba(255,136,0,0.28);
   border-radius: 12px;
-  padding: 15px;
+  padding: 14px;
   text-align: center;
 }
 
 .widget h3 {
-  color: #ffa500;
-  margin-bottom: 10px;
-}
-
-.widget p {
-  font-size: 1.4rem;
-  font-weight: bold;
+  margin-bottom: 8px;
+  color: var(--btc-orange);
 }
 
 /* ============================
-        FOOTER
+   FOOTER (FINAL)
 ============================ */
 .footer {
   margin-top: 50px;
-  position: relative;
-  z-index: 3;
-  padding: 30px 0;
+  padding: 30px 12px;
   text-align: center;
-  background: rgba(255, 255, 255, 0.03);
-  border-top: 1px solid rgba(255, 136, 0, 0.3);
+  /* sutil degradado hacia abajo, sin hacer el footer demasiado claro */
+  background: linear-gradient(180deg, rgba(255,255,255,0.00), rgba(255,255,255,0.035));
+  border-top: 1px solid rgba(255,136,0,0.12);
 }
 
-.footer p {
-  color: #ffa500;
-}
-
-.footer-thanks {
-  margin-top: 12px;
-  color: #ffbf66;
-}
-
-/* ONG image bottom */
-.ong-footer img {
-  width: 110px;
-  height: 110px;
-  border-radius: 16px;
-  border: 2px solid #ffa500;
-  margin: 12px 0;
-  transition: 0.2s;
-}
-.ong-footer img:hover {
-  transform: scale(1.06);
-  box-shadow: 0 0 10px #ffa500;
-}
-
-/* footer icons */
-.footer-icons {
-  margin-top: 12px;
+.footer-content {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
-.footer-icons a {
-  font-size: 1.6rem;
-  font-weight: bold;
-  text-decoration: none;
-  transition: 0.2s;
+/* Nombre + íconos */
+.footer-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-/* Mail blanco */
-.icon-mail { color: #ffffff; }
+.inline-icons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-/* GitHub (negro) */
-.icon-github { color: #000000; }
+.inline-icons svg {
+  display: block;
+}
 
-/* LinkedIn (azul oficial) */
-.icon-linkedin { color: #0a66c2; }
+/* Icon colors */
+.icon-mail svg { stroke: #fff; }
+.icon-github svg { fill: #000; }
+.icon-linkedin svg { fill: #0a66c2; }
 
-.footer-icons a:hover {
-  transform: scale(1.2);
-  opacity: 0.85;
+/* Thanks line */
+.thanks-line {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ong-footer img {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  border: 2px solid var(--btc-orange);
 }
 
 /* ============================
-        RESPONSIVE
+   RESPONSIVE
 ============================ */
-@media (max-width: 900px) {
-  .main-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 980px) {
+  .main-grid { grid-template-columns: 1fr; }
+  .stat-main { grid-column: span 1; max-width: none; padding: 14px; }
+  .header-top { flex-direction: column-reverse; align-items: center; justify-content: center; gap: 12px; }
+  .title-wrap { text-align: center; }
+  .ong-header img { width: 86px; height: 86px; }
+  .stats-wrapper { max-width: 760px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .side-widgets { justify-items: center; }
+}
+
+@media (max-width: 700px) {
+  /* Móviles grandes / tablets: una columna de cards centradas */
+  .stats-wrapper { grid-template-columns: 1fr; gap: 14px; padding: 16px; }
+  .stat-card { max-width: 420px; min-height: auto; padding: 14px; }
+  .stat-card p { font-size: 1.15rem; }
+  .stat-main, .stat-wide { max-width: 100%; width: 100%; margin: 0; }
+  .main-grid { grid-template-columns: 1fr; padding: 0 12px; }
+  .side-widgets { grid-auto-rows: auto; display: grid; gap: 12px; }
+  .ong-header img { width: 72px; height: 72px; }
+  .header-top { padding: 8px 0; }
 }
 
 @media (max-width: 480px) {
-  header h1 {
-    font-size: 1.9rem;
-  }
-
-  .stat-card p {
-    font-size: 1.2rem;
-  }
-
-  .console-box {
-    font-size: 0.75rem;
-  }
-
-  .ong-header img {
-    width: 55px;
-    height: 55px;
-  }
+  header h1 { font-size: 1.3rem; }
+  .subtitle { font-size: 0.9rem; text-align: center; }
+  .title-wrap { max-width: 100%; }
+  .console-box { height: 220px; font-size: 0.76rem; }
+  .stat-card p { font-size: 1rem; }
+  .stats-wrapper { padding: 12px; gap: 12px; }
+  .stat-card { padding: 12px; max-width: 100%; }
+  .footer { padding: 20px 10px; background: linear-gradient(180deg, rgba(255,255,255,0.00), rgba(255,255,255,0.02)); }
+  .side-widgets { padding: 0 12px; }
 }
-
-
-
