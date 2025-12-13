@@ -313,7 +313,7 @@ header h1 {
   padding: 30px 12px;
   text-align: center;
   /* sutil degradado hacia abajo, sin hacer el footer demasiado claro */
-  background: linear-gradient(180deg, rgba(255,255,255,0.00), rgba(255,255,255,0.035));
+  background: linear-gradient(180deg, rgba(255,255,255,0.00), rgba(22, 83, 32, 0.035));
   border-top: 1px solid rgba(255,136,0,0.12);
 }
 
@@ -343,7 +343,7 @@ header h1 {
 
 /* Icon colors */
 .icon-mail svg { stroke: #fff; }
-.icon-github svg { fill: #000; }
+.icon-github svg { fill: #5f5d5d; }
 .icon-linkedin svg { fill: #0a66c2; }
 
 /* Thanks line */
