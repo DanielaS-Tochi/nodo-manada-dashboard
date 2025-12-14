@@ -1,74 +1,319 @@
+🐺 Nodo Manada Dashboard
+
+![logo-lobo](dashboard/client/images/logo-lobo.png)
+
+Nodo Manada Dashboard es un dashboard liviano, local y soberano para visualizar el estado de tu nodo Bitcoin Core usando su interfaz RPC, con una consola estilo vintage y métricas claras pensadas para aprendizaje y exploración.
+
+Este proyecto nació como parte de una capacitación técnica y evolucionó hacia una herramienta real para entender qué está haciendo tu nodo, sin depender de terceros.
+
+🧠 No es un explorador público.
+🔒 No expone datos a internet.
+🐺 Todo corre en tu máquina.
+
+✨ Qué es (y qué no es)
+Es
+
+Un panel local conectado a tu propio Bitcoin Core
+
+Una forma visual de entender:
+
+bloques
+
+sincronización
+
+mempool
+
+conexiones
+
+hashrate estimado
+
+Una base sólida para seguir explorando wallets (ej: Sparrow)
+
+No es
+
+Una wallet
+
+Un explorador tipo Etherscan
+
+Una herramienta para controlar o minar Bitcoin
+
+Un servicio en la nube
+
+📦 Contenido
+
+Requisitos
+
+Instalación
+
+Configuración RPC
+
+Ejecutar el servidor
+
+Estructura del proyecto
+
+Uso del dashboard
+
+Endpoints disponibles
+
+Seguridad
+
+Resolución de problemas
+
+Documentación adicional
+
+Agradecimientos y licencia
+
+🧩 Requisitos
+
+Bitcoin Core con RPC habilitado (versión LTS recomendada)
+
+Node.js (LTS) y npm
+
+Navegador moderno (Chrome, Firefox, Brave, etc.)
+
+Funciona en Windows, Linux y macOS.
+En Windows, PowerShell es suficiente.
+
+🚀 Instalación rápida
+
+Clona este repositorio o descarga el código.
+
+Desde la carpeta principal:
+
+cd dashboard
+npm install
+
+🔐 Configuración RPC
+
+Copia el archivo de ejemplo:
+
+cp server/config.example.json server/config.json
+
+
+Edita server/config.json con los datos de tu nodo:
+
+{
+  "rpcuser": "miusuario",
+  "rpcpassword": "miclave",
+  "rpcport": 8332
+}
+
+
+📌 Importante
+
+config.json es privado
+
+Nunca debe subirse a GitHub
+
+▶️ Ejecutar el servidor
+
+Desde dashboard/:
+
+npm run dev
+
+
+Luego abre:
+
+👉 http://localhost:3000
+
+Cambiar el puerto (opcional)
+
+Linux / macOS:
+
+PORT=3001 npm run dev
+
+
+Windows PowerShell:
+
+$env:PORT=3001; npm run dev
+
+🗂️ Estructura del proyecto
+dashboard/
+├─ server/
+│  ├─ index.js        # servidor Express
+│  ├─ rpc.js          # cliente RPC
+│  ├─ config.json     # credenciales (NO commitear)
+│  └─ config.example.json
+│
+├─ client/
+│  ├─ index.html
+│  ├─ app.js
+│  ├─ style.css
+│  └─ images/
+│     ├─ logo-lobo.png
+│     └─ 100nodos.png
+│
+├─ docs/
+│  └─ docs.md         # plan de vuelo + conceptos
+│
+└─ README.md
+
+🖥️ Uso del dashboard
+
+Al abrir el navegador verás:
+
+Cards de estado
+
+Último bloque
+
+Conexiones
+
+Dificultad
+
+Uso de disco
+
+Peso del bloque
+
+Hora del bloque
+
+Mempool
+
+Hashrate estimado
+
+Warnings
+
+Estas métricas se actualizan automáticamente cada pocos segundos.
+
+Consola del nodo
+
+El panel CONSOLE — BITCOIN NODE muestra información cruda del nodo en formato JSON, tal como la devuelve Bitcoin Core, pero ordenada y legible.
+
+Sirve para:
+
+inspección
+
+aprendizaje
+
+depuración
+
+entender RPC “en vivo”
+
+🔌 Endpoints disponibles
+
+El backend expone estos endpoints:
+
+GET /api/status → getblockchaininfo
+
+GET /api/lastblock → último bloque (header)
+
+GET /api/connections → getnetworkinfo
+
+GET /api/mempool → estado del mempool
+
+GET /api/hashps → hashrate estimado
+
+Todos se consumen solo localmente.
+
+🔐 Seguridad
+
+Recomendaciones importantes:
+
+Nunca subas server/config.json
+
+Añade a .gitignore:
+
+dashboard/server/config.json
+
+
+Si alguna vez se subió por error:
+
+Elimínalo del índice
+
+Rota las credenciales RPC
+
+Limpia el historial si es necesario
+
+🧯 Problemas comunes
+
+El puerto está ocupado
+
+EADDRINUSE
+
+
+Solución: usar otro puerto (PORT=3001)
+
+No conecta con el nodo
+
+Verifica que Bitcoin Core esté corriendo
+
+Revisa usuario, contraseña y puerto
 # nodo-manada-dashboard
 
 ![logo-lobo](dashboard/client/images/logo-lobo.png)
 
-Nodo Manada Dashboard — Un dashboard liviano y soberano para visualizar y consultar tu nodo Bitcoin Core vía RPC.
+## Resumen
 
-Este README es una guía paso a paso para poner en marcha el proyecto localmente, configurar la conexión RPC y usar el cliente web incluido.
+Nodo Manada Dashboard es un panel ligero y autónomo para consultar un nodo Bitcoin Core mediante RPC. Proporciona una vista compacta con tarjetas informativas y una consola de inspección para desarrolladores y operadores locales.
+
+Este README está orientado a usuarios que quieren instalar y ejecutar el dashboard localmente de forma segura.
+
+---
 
 ## Contenido
 
-- Requisitos
-- Instalación
-- Configuración RPC (`server/config.json`)
-- Ejecutar el servidor
-- Estructura del proyecto
-- Uso del cliente
-- Resolución de problemas
-- Agradecimientos y licencia
+- [Requisitos](#requisitos)
+- [Instalación rápida](#instalaci%C3%B3n-r%C3%A1pida)
+- [Configuración RPC](#configuraci%C3%B3n-rpc)
+- [Ejecutar el servidor](#ejecutar-el-servidor)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Uso del cliente](#uso-del-cliente)
+- [API (endpoints)](#api-endpoints)
+- [Seguridad y datos sensibles](#seguridad-y-datos-sensibles)
+- [Desarrollo](#desarrollo)
+- [Contribuir](#contribuir)
+- [Licencia](#licencia)
 
 ---
 
 ## Requisitos
 
-- Bitcoin Core con RPC habilitado (versión recomendada: LTS actual).
-- Node.js (LTS) y npm.
-- Un navegador moderno para la interfaz web.
+- Bitcoin Core con RPC habilitado.
+- Node.js (LTS recomendado) y npm.
+- Navegador moderno (Chrome, Firefox, Edge, Safari).
 
-Si usas Windows, PowerShell funciona bien; en Linux/macOS usa bash.
+Para desarrollo en Windows recomendamos PowerShell; en Linux/macOS, bash/zsh.
 
 ---
 
-## Instalación (rápida)
+## Instalación rápida
 
-1. Clona el repositorio o descarga el código.
-
-2. Entra a la carpeta del dashboard e instala dependencias:
+1. Clona el repositorio:
 
 ```bash
-cd dashboard
+git clone <repo-url>
+cd nodo-manada-dashboard/dashboard
+```
+
+2. Instala dependencias:
+
+```bash
 npm install
 ```
 
-3. Copia `server/config.example.json` a `server/config.json` y rellena los datos RPC de tu nodo:
+3. Crea tu configuración RPC privada:
 
-```json
-{
- "rpcuser": "miusuario",
- "rpcpassword": "miclave",
- "rpcport": 8332
-}
+```bash
+cp server/config.example.json server/config.json
+# editar server/config.json con rpcuser/rpcpassword/rpcport
 ```
 
-> Nota: `config.json` debe permanecer privado y no versionarse en git.
+> Importante: no subas `server/config.json` a GitHub. Consulta la sección de seguridad más abajo.
 
 ---
 
 ## Configuración RPC
 
-Coloca el archivo `config.json` en `dashboard/server/config.json`. El servidor lo carga desde esa ubicación y lo usa para conectar con tu Bitcoin Core en `http://127.0.0.1:<rpcport>/`.
-
-Ejemplo minímo (`dashboard/server/config.example.json`):
+El servidor carga `dashboard/server/config.json` para conectar con Bitcoin Core. Formato mínimo:
 
 ```json
 {
- "rpcuser": "usuario",
- "rpcpassword": "contraseña",
- "rpcport": 8332
+  "rpcuser": "usuario",
+  "rpcpassword": "contraseña",
+  "rpcport": 8332
 }
 ```
 
-Si tu nodo está en otra máquina, modifica la URL en `server/rpc.js` o habilita el acceso remoto en tu nodo (con precaución).
+Si el nodo está en otra máquina, ajusta la URL en `dashboard/server/rpc.js` o habilita el acceso remoto en tu nodo con cuidado.
 
 ---
 
@@ -80,126 +325,103 @@ Desde `dashboard/`:
 npm run dev
 ```
 
-Esto ejecuta el servidor Express en `http://localhost:3000` (por defecto). Si prefieres usar otro puerto:
+Por defecto el servidor escucha en `http://localhost:3000`. Para usar otro puerto:
 
 ```bash
+# Linux/macOS
 PORT=3001 npm run dev
-```
 
-(En Windows PowerShell: `$env:PORT=3001; npm run dev`)
+# Windows PowerShell
+$env:PORT=3001; npm run dev
+```
 
 ---
 
 ## Estructura del proyecto
 
-- `dashboard/server/` — servidor Express y código RPC.
-- `index.js` — servidor principal.
-- `rpc.js` — cliente RPC que habla con Bitcoin Core.
-- `config.json` — configuración local (no commitear).
-- `dashboard/client/` — frontend estático (HTML/CSS/JS).
-- `index.html`, `app.js`, `style.css`
-- `images/logo-lobo.png`, `images/100nodos.png`
-- `scripts/`, `docs/` — documentación y utilidades.
+- `dashboard/server/` — servidor Express y cliente RPC.
+  - `index.js` — servidor principal.
+  - `rpc.js` — wrapper para llamadas RPC.
+  - `config.example.json` — plantilla de configuración (no contiene credenciales).
+- `dashboard/client/` — frontend (estático): `index.html`, `app.js`, `style.css`, `images/`.
+- `docs/`, `scripts/` — documentación y utilidades.
 
 ---
 
 ## Uso del cliente
 
-1. Abre en tu navegador `http://localhost:3000`.
-2. La página muestra varias tarjetas (`Último bloque`, `Dificultad`, `Conexiones`, etc.) que se actualizan periódicamente mediante fetch a los endpoints del servidor.
-3. El panel de consola (`CONSOLE — BITCOIN NODE`) muestra datos crudos del nodo en JSON para inspección rápida.
-
-### Endpoints disponibles (servidor)
-
-- `GET /api/status` — información básica (`getblockchaininfo`).
-- `GET /api/lastblock` — información del último bloque (header).
-- `GET /api/connections` — información de red (`getnetworkinfo`).
-- `GET /api/mempool` — info del mempool.
-- `GET /api/hashps` — hashrate estimado.
+Abre `http://localhost:3000` en tu navegador. El dashboard muestra tarjetas con información del nodo y una consola que presenta JSON crudo. Las tarjetas se actualizan periódicamente.
 
 ---
 
-## Personalizar apariencia
+## API (endpoints)
 
-Los estilos están en `dashboard/client/style.css`. Puedes ajustar colores, tipografías y tamaños ahí. El logo principal está en `dashboard/client/images/logo-lobo.png`.
+- `GET /api/status` — `getblockchaininfo`.
+- `GET /api/lastblock` — último bloque (header).
+- `GET /api/connections` — `getnetworkinfo`.
+- `GET /api/mempool` — `getmempoolinfo`.
+- `GET /api/hashps` — `getnetworkhashps`.
 
-Si quieres probar contenidos largos (por ejemplo para `Dificultad`), el CSS ya está preparado para ajustar la altura automáticamente.
+Ejemplo rápido (curl):
 
----
-
-## Resolución de problemas comunes
-
-- Error EADDRINUSE al iniciar: significa que el puerto 3000 está en uso. Para solucionarlo:
-- Mata el proceso que usa el puerto o ejecuta en otro puerto: `PORT=3001 npm run dev`.
-
-- `config.json` no encontrado: asegúrate de copiar `server/config.example.json` a `server/config.json`.
-
-- No hay conexión RPC: revisa que Bitcoin Core esté corriendo con RPC habilitado y que `rpcuser`/`rpcpassword`/`rpcport` sean correctos.
+```bash
+curl http://localhost:3000/api/status
+```
 
 ---
 
 ## Seguridad y datos sensibles
 
-Este proyecto requiere credenciales RPC para conectar con Bitcoin Core. Ten en cuenta las siguientes recomendaciones de seguridad antes de subir código a GitHub:
+El dashboard requiere credenciales RPC; sigue estas buenas prácticas antes de publicar el repositorio:
 
-- Nunca subas `dashboard/server/config.json` (o cualquier archivo con credenciales) al repositorio.
-- Añade una entrada en `.gitignore` para evitar subir archivos sensibles:
+- Añade `dashboard/server/config.json` a `.gitignore` (si no está ya):
 
 ```
-# Ignorar configuración privada del servidor
 dashboard/server/config.json
 ```
 
-- Si por error ya subiste `config.json` al repositorio remoto: elimina el archivo del índice, añade la entrada a `.gitignore`, realiza un commit y fuerza push, y rota las credenciales RPC inmediatamente.
-
-Comandos básicos para eliminar el archivo del índice local y remoto:
+- Nunca subas credenciales al repo. Si ya lo hiciste:
+  1. Rota/regenéra las credenciales en tu nodo.
+  2. Elimina el archivo del índice y haz commit:
 
 ```bash
 git rm --cached dashboard/server/config.json
-git commit -m "remove sensitive config"
+git commit -m "chore: remove sensitive config"
 git push
 ```
 
-Si el secreto quedó publicado en el historial, usa herramientas como `git filter-repo` o `BFG Repo-Cleaner` para eliminarlo del historial, y vuelve a rotar las credenciales por seguridad.
+- Para eliminar secretos del historial usa `git filter-repo` o [`BFG Repo-Cleaner`](https://rtyley.github.io/bfg-repo-cleaner/), y rota credenciales.
 
 ---
 
-## Desarrollo y pruebas
+## Desarrollo
 
-- El frontend hace fetch a los endpoints del servidor; para probar cambios, guarda los archivos y recarga el navegador.
-- Si prefieres reinicio automático del servidor al guardar cambios, instala herramientas como `nodemon` (opcional):
-
-```bash
-cd dashboard
-npm install --save-dev nodemon
-# y cambiar el script dev a: nodemon server/index.js
-```
-
----
-
-## Agradecimientos
-
-Gracias a la formación provista por Joy y Karim, y a la comunidad por inspirar este proyecto.
-
-![100nodos](dashboard/client/images/100nodos.png)
+- Para cambios en el frontend edita `dashboard/client/style.css` o `dashboard/client/app.js` y recarga el navegador.
+- Opcional: usar `nodemon` para reinicio automático del servidor durante desarrollo (`npm install --save-dev nodemon`).
 
 ---
 
 ## Contribuir
 
-1. Haz fork del repo.
-2. Crea una rama con tu feature: `git checkout -b feature/nombre`.
-3. Haz commits claros y push.
-4. Abre un pull request describiendo los cambios.
+1. Haz fork del repositorio.
+2. Crea una rama descriptiva: `git checkout -b feat/mi-cambio`.
+3. Envía commits atómicos y abre un PR con descripción clara.
 
 ---
 
 ## Licencia
 
-Este proyecto se publica bajo la licencia MIT. Consulta el archivo `LICENSE` incluido para los términos completos.
-
-Si prefieres otra licencia para colaboraciones, indícalo en tu Pull Request.
+Este proyecto se publica bajo la licencia MIT. Consulta `LICENSE` para los términos completos.
 
 ---
 
-Construido por la Manada. Con amor, técnica y soberanía. 🐺
+## Agradecimientos
+
+Gracias a Joy y Karim por la capacitación y a la comunidad por las ideas.
+
+![100nodos](dashboard/client/images/100nodos.png)
+
+---
+
+Construido por Daniela S. Tochi
+Asistencia técnica y conceptual: ChatGPT (OpenAI).
