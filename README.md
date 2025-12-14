@@ -1,17 +1,26 @@
-🐺 Nodo Manada Dashboard
+# 🐺 Nodo Manada Dashboard
 
-![logo-lobo](dashboard/client/images/logo-lobo.png)
+<p align="center">
+  <img src="dashboard/client/images/logo-lobo.png" alt="Logo Nodo Manada" width="180">
+</p>
 
-Nodo Manada Dashboard es un dashboard liviano, local y soberano para visualizar el estado de tu nodo Bitcoin Core usando su interfaz RPC, con una consola estilo vintage y métricas claras pensadas para aprendizaje y exploración.
+<p align="center">
+  <em>Dashboard soberano para monitorear y aprender desde tu nodo Bitcoin Core</em>
+</p>
+
+## Resumen
+
+Nodo Manada Dashboard es un panel ligero y autónomo para consultar un nodo Bitcoin Core mediante RPC. Proporciona una vista compacta con tarjetas informativas y una consola de inspección para desarrolladores y operadores locales.
+
+Este README está orientado a usuarios que quieren instalar y ejecutar el dashboard localmente de forma segura.
 
 Este proyecto nació como parte de una capacitación técnica y evolucionó hacia una herramienta real para entender qué está haciendo tu nodo, sin depender de terceros.
+---
+### 🧠 No es un explorador público. 🔒 No expone datos a internet. 🐺 Todo corre en tu máquina.
+---
+## ✨ Qué es (y qué no es) 
 
-🧠 No es un explorador público.
-🔒 No expone datos a internet.
-🐺 Todo corre en tu máquina.
-
-✨ Qué es (y qué no es)
-Es
+### Es:
 
 Un panel local conectado a tu propio Bitcoin Core
 
@@ -29,7 +38,8 @@ hashrate estimado
 
 Una base sólida para seguir explorando wallets (ej: Sparrow)
 
-No es
+---
+### No es:
 
 Una wallet
 
@@ -39,116 +49,8 @@ Una herramienta para controlar o minar Bitcoin
 
 Un servicio en la nube
 
-📦 Contenido
-
-Requisitos
-
-Instalación
-
-Configuración RPC
-
-Ejecutar el servidor
-
-Estructura del proyecto
-
-Uso del dashboard
-
-Endpoints disponibles
-
-Seguridad
-
-Resolución de problemas
-
-Documentación adicional
-
-Agradecimientos y licencia
-
-🧩 Requisitos
-
-Bitcoin Core con RPC habilitado (versión LTS recomendada)
-
-Node.js (LTS) y npm
-
-Navegador moderno (Chrome, Firefox, Brave, etc.)
-
-Funciona en Windows, Linux y macOS.
-En Windows, PowerShell es suficiente.
-
-🚀 Instalación rápida
-
-Clona este repositorio o descarga el código.
-
-Desde la carpeta principal:
-
-cd dashboard
-npm install
-
-🔐 Configuración RPC
-
-Copia el archivo de ejemplo:
-
-cp server/config.example.json server/config.json
-
-
-Edita server/config.json con los datos de tu nodo:
-
-{
-  "rpcuser": "miusuario",
-  "rpcpassword": "miclave",
-  "rpcport": 8332
-}
-
-
-📌 Importante
-
-config.json es privado
-
-Nunca debe subirse a GitHub
-
-▶️ Ejecutar el servidor
-
-Desde dashboard/:
-
-npm run dev
-
-
-Luego abre:
-
-👉 http://localhost:3000
-
-Cambiar el puerto (opcional)
-
-Linux / macOS:
-
-PORT=3001 npm run dev
-
-
-Windows PowerShell:
-
-$env:PORT=3001; npm run dev
-
-🗂️ Estructura del proyecto
-dashboard/
-├─ server/
-│  ├─ index.js        # servidor Express
-│  ├─ rpc.js          # cliente RPC
-│  ├─ config.json     # credenciales (NO commitear)
-│  └─ config.example.json
-│
-├─ client/
-│  ├─ index.html
-│  ├─ app.js
-│  ├─ style.css
-│  └─ images/
-│     ├─ logo-lobo.png
-│     └─ 100nodos.png
-│
-├─ docs/
-│  └─ docs.md         # plan de vuelo + conceptos
-│
-└─ README.md
-
-🖥️ Uso del dashboard
+---
+## Uso del dashboard
 
 Al abrir el navegador verás:
 
@@ -174,7 +76,8 @@ Warnings
 
 Estas métricas se actualizan automáticamente cada pocos segundos.
 
-Consola del nodo
+---
+## Consola del nodo
 
 El panel CONSOLE — BITCOIN NODE muestra información cruda del nodo en formato JSON, tal como la devuelve Bitcoin Core, pero ordenada y legible.
 
@@ -188,7 +91,8 @@ depuración
 
 entender RPC “en vivo”
 
-🔌 Endpoints disponibles
+---
+## Endpoints disponibles
 
 El backend expone estos endpoints:
 
@@ -203,52 +107,7 @@ GET /api/mempool → estado del mempool
 GET /api/hashps → hashrate estimado
 
 Todos se consumen solo localmente.
-
-🔐 Seguridad
-
-Recomendaciones importantes:
-
-Nunca subas server/config.json
-
-Añade a .gitignore:
-
-dashboard/server/config.json
-
-
-Si alguna vez se subió por error:
-
-Elimínalo del índice
-
-Rota las credenciales RPC
-
-Limpia el historial si es necesario
-
-🧯 Problemas comunes
-
-El puerto está ocupado
-
-EADDRINUSE
-
-
-Solución: usar otro puerto (PORT=3001)
-
-No conecta con el nodo
-
-Verifica que Bitcoin Core esté corriendo
-
-Revisa usuario, contraseña y puerto
-# nodo-manada-dashboard
-
-![logo-lobo](dashboard/client/images/logo-lobo.png)
-
-## Resumen
-
-Nodo Manada Dashboard es un panel ligero y autónomo para consultar un nodo Bitcoin Core mediante RPC. Proporciona una vista compacta con tarjetas informativas y una consola de inspección para desarrolladores y operadores locales.
-
-Este README está orientado a usuarios que quieren instalar y ejecutar el dashboard localmente de forma segura.
-
 ---
-
 ## Contenido
 
 - [Requisitos](#requisitos)
@@ -419,9 +278,10 @@ Este proyecto se publica bajo la licencia MIT. Consulta `LICENSE` para los térm
 
 Gracias a Joy y Karim por la capacitación y a la comunidad por las ideas.
 
-![100nodos](dashboard/client/images/100nodos.png)
+<p align="center">
+  <img src="dashboard/client/images/100nodos.png" alt="Proyecto 100 Nodos" width="220">
+</p>
 
 ---
-
-Construido por Daniela S. Tochi
-Asistencia técnica y conceptual: ChatGPT (OpenAI).
+### Construido por Daniela S. Tochi
+### Asistencia técnica y conceptual: ChatGPT (OpenAI).
