@@ -281,11 +281,15 @@ Gracias a Joy y Karim por la capacitación y a la comunidad por las ideas.
 <p align="center">
   <img src="dashboard/client/images/100nodos.png" alt="Proyecto 100 Nodos" width="220">
 </p>
+
 ---
+
 ## Comunidad y más info en:
-bitcoin.ar
+https://bitcoin.ar
 https://bitcoinargentina.org/100-nodos-bitcoin/
 
 ---
 ### Construido por Daniela S. Tochi
 ### Asistencia técnica y conceptual: ChatGPT (OpenAI).
+
+---
